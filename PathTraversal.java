@@ -81,7 +81,18 @@ public class ProfileUploadRetrieval extends AssignmentEndpoint {
         if (queryParams != null && (queryParams.contains("..") || queryParams.contains("/"))) {
             return ResponseEntity.badRequest().body("Illegal characters are not allowed in the query params");
         }
-        try {
+String basePath = "/your/base/directory"; // Replace with your base directory
+String filePath = request.getParameter("id");
+File file = new File(filePath);
+try {
+    String canonicalPath = file.getCanonicalPath();
+    if (!canonicalPath.startsWith(new File(basePath).getCanonicalPath())) {
+        throw new SecurityException("Attempt to access file outside of the base directory");
+    }
+} catch (IOException e) {
+    throw new SecurityException("Error resolving file path", e);
+}
+boolean exists = file.exists();
 //            var id = request.getParameter("id");
             // comment
             // comment 2
